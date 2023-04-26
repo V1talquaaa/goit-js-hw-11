@@ -10,7 +10,7 @@ const URL = 'https://pixabay.com/api/';
 
 const form = document.querySelector('.search-form');
 const imagesWrapper = document.querySelector('.images-wrapper');
-const loadMore = document.querySelector('.load-more');
+
 
 const imagesApiService = new ImagesApiService();
 
@@ -21,8 +21,11 @@ const loadMoreBtn = new LoadMoreBtn({
 });
 
 
-loadMoreBtn.button.addEventListener('click', fetchNewImages)
+loadMoreBtn.button.addEventListener('click', fetchNewImages);
+
 form.addEventListener('submit', onSurmitBtnClick);
+
+
 
 function onSurmitBtnClick(e) {
     e.preventDefault();
@@ -32,21 +35,16 @@ function onSurmitBtnClick(e) {
     const form = e.currentTarget;
     const query = form.elements.searchQuery.value;
     imagesApiService.query = query;
-
+    
     imagesApiService.resetPage();
     clearImagesList();
-    
     fetchNewImages().finally(() => form.reset());
+    
  }
 
 async function fetchNewImages() {
   loadMoreBtn.disable();
-  // return fetchImagesMarkup()
-  // .then(markup => {
-  //   updateImagesList(markup);
-  //   loadMoreBtn.enable();
-  // })
-  // .catch(onError)
+ 
   try {
     const markup = await fetchImagesMarkup();
     updateImagesList(markup);
@@ -59,24 +57,24 @@ async function fetchNewImages() {
 }
 
 async function fetchImagesMarkup() {
-  // return  imagesApiService.fetchImages()
-  // .then(({hits}) => {
-
-  //     if(hits.length === 0) throw new Error('No data on this request!')
-
-  //     return hits.reduce((acc, hit) => acc + createMarkup(hit), "");
-
-  //     });
 
   try {
     const { hits } = await imagesApiService.fetchImages();
-    if(hits.length === 0) throw new Error('No data!');
+
+    // if(hits.length === 0) throw new Error('No data!');
+
+    if(hits.length < 40 && hits.length > 1) {
+      loadMoreBtn.hide();
   
+      Notiflix.Notify.warning('We are sorry, but you have reached the end of search results')
+    } else if(hits.length === 0) throw new Error('No data!');
+
     return hits.reduce((acc, hit) => acc + createMarkup(hit), "");
+
   } catch (err) {
     onError(err);
   }
-
+  
 }
 
 function createMarkup({webformatURL, largeImageURL, tags, likes, views, comments, downloads}) {
@@ -123,9 +121,3 @@ function onError(err) {
     
 };
 
-
-function onWarning(err) {
-  loadMoreBtn.disable();
-  console.error(err);
-  Notiflix.Notify.warning('We are sorry, but you have reached the end of search results.');
-}

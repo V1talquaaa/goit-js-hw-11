@@ -1,7 +1,6 @@
 import axios from "axios";
 
 
-
 export default class ImagesApiService {
     static KEY = '35656259-7e2fced7102c9b310ac9ede3a';
     static URL = 'https://pixabay.com/api/';
