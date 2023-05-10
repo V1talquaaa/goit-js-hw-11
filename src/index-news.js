@@ -17,24 +17,16 @@ function onLoadMoreButtonClick(e) {
 async function onSearch(e) {
     e.preventDefault();
     const query = e.currentTarget.elements.searchQuery.value;
+
     const {articles} = await fetchNews(query);
-    console.log(articles.length);
 
     if(articles.length === 0) throw new Error(err);
+    console.log(articles);
 
-    markup(articles);
+   markup(articles);
 
     newsWrapper.insertAdjacentHTML('beforeend', markup);
     
-  }
-
-
-
- function onLoadMoreButtonClick() {
-    console.log('this is click');
-    // const {articles} = await fetchNews(query);
-    // markup(articles);
-    // newsWrapper.insertAdjacentHTML("beforeend", markup);
   }
 
   
