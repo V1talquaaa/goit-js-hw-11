@@ -46,7 +46,8 @@ body {
     display: block;
 }
 
-.load-more:disabled {
+.load-more:disabled,
+.load-more1:disabled {
     background-color: #ada5a5;
     cursor: not-allowed;
 }
